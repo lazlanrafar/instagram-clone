@@ -3,10 +3,10 @@ import { Link, useLocation } from "react-router-dom";
 import { sidebarMenus } from "../../../constants";
 import { Turn as Hamburger } from "hamburger-react";
 
-import AppSidebarProfile from "./sidebarProfile";
-import AppSidebarCopyright from "./sidebarCopyright";
+import AppNavbarProfile from "./navbarProfile";
+import AppNavbarCopyright from "./navbarCopyright";
 
-export default function AppSidebar() {
+export default function AppNavbar() {
   const [isActive, setIsActive] = useState<boolean>(false);
   const pathname = useLocation().pathname;
 
@@ -18,7 +18,7 @@ export default function AppSidebar() {
       >
         <div className="md:p-4 overflow-y-auto rounded-xl w-full">
           <div className="flex flex-row items-start md:flex-col md:justify-center justify-between p-4 md:p-0">
-            <AppSidebarProfile isActive={isActive} />
+            <AppNavbarProfile isActive={isActive} />
 
             <div className={`flex ${isActive ? "flex-col-reverse justify-between" : "flex-row"}`}>
               <div className="md:hidden">
@@ -49,7 +49,7 @@ export default function AppSidebar() {
             </ul>
           </nav>
           <hr className="md:my-4 mb-4 hidden md:block" />
-          <AppSidebarCopyright />
+          <AppNavbarCopyright />
         </div>
       </aside>
     </div>

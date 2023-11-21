@@ -1,4 +1,4 @@
-export default function AppSidebarCopyright() {
+export default function AppNavbarCopyright() {
   return (
     <div className="md:flex items-center gap-1 text-sm py-1 px-3 text-neutral-600 dark:text-neutral-400 hidden">
       <span>©</span>
