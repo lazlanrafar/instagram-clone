@@ -8,15 +8,28 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createUserAccount } from "@/lib/appwrite/api";
+import { useToast } from "@/components/ui/use-toast";
+import { useUserContext } from "@/context/AuthContext";
+import {
+  useCreateUserAccount,
+  useSignInAccount,
+} from "@/lib/react-query/queriesAndMutations";
 import { SignUpSchema } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 export default function SignUpPage() {
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const { checkAuthUser } = useUserContext();
+
+  const { mutateAsync: createUserAccount } = useCreateUserAccount();
+  const { mutateAsync: signInAccount } = useSignInAccount();
 
   const form = useForm<z.infer<typeof SignUpSchema>>({
     resolver: zodResolver(SignUpSchema),
@@ -29,11 +42,41 @@ export default function SignUpPage() {
   });
 
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof SignUpSchema>) {
+  async function onSubmit(user: z.infer<typeof SignUpSchema>) {
     setLoading(true);
-    const newUser = await createUserAccount(values);
 
-    console.log(newUser);
+    try {
+      const newUser = await createUserAccount(user);
+
+      if (!newUser) {
+        toast({ title: "Sign up failed. Please try again." });
+
+        return;
+      }
+
+      const session = await signInAccount({
+        email: user.email,
+        password: user.password,
+      });
+
+      if (!session) {
+        toast({ title: "Something went wrong. Please login your new account" });
+        navigate("/sign-in");
+        return;
+      }
+
+      const isLoggedIn = await checkAuthUser();
+      if (isLoggedIn) {
+        form.reset();
+        navigate("/");
+      } else {
+        toast({ title: "Login failed. Please try again." });
+        return;
+      }
+    } catch (error) {
+      console.log({ error });
+    }
+
     setLoading(false);
   }
 

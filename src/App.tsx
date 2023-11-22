@@ -1,18 +1,23 @@
 import { Route, Routes } from "react-router-dom";
 import { LayoutApp, LayoutAuth } from "./layouts";
 import { HomePage, SignInPage, SignUpPage } from "./pages";
+import { Toaster } from "./components/ui/toaster";
 
 export const App = () => {
   return (
-    <Routes>
-      <Route element={<LayoutAuth />}>
-        <Route path="/sign-in" element={<SignInPage />} />
-        <Route path="/sign-up" element={<SignUpPage />} />
-      </Route>
+    <>
+      <Routes>
+        <Route element={<LayoutAuth />}>
+          <Route path="/sign-in" element={<SignInPage />} />
+          <Route path="/sign-up" element={<SignUpPage />} />
+        </Route>
 
-      <Route element={<LayoutApp />}>
-        <Route index path="/" element={<HomePage />} />
-      </Route>
-    </Routes>
+        <Route element={<LayoutApp />}>
+          <Route index path="/" element={<HomePage />} />
+        </Route>
+      </Routes>
+
+      <Toaster />
+    </>
   );
 };
